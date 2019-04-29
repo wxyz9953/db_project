@@ -42,6 +42,7 @@ class GradeController
 
     public function getdis()
     {
+
         $course = intval($_GET['course']);
         $res = [];
         $res["不及格"] = DB::q("SELECT COUNT(*) FROM " . DB::t("enroll") . " WHERE course_id = :c AND grades >-1 AND grades < 60", [':c' => $course])->fetch()['COUNT(*)'];
