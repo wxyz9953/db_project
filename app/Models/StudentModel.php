@@ -32,6 +32,7 @@ class StudentModel
             . DB::t("enroll") . " AS e LEFT JOIN " . DB::t("course") .
             " AS c ON e.course_id = c.number WHERE e.stu_id = :number", [':number' => $id])->fetchAll();
         return $res;
+
         
     }
 
