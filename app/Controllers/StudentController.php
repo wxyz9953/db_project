@@ -18,6 +18,7 @@ class StudentController
 
     public function getList()
     {
+        var_dump($_GET);
         $page = intval($_GET['page']);
         $limit = intval($_GET['limit']);
         $res = DB::q("SELECT number, name, sex,enter_age,enter_time,grade,class FROM "
