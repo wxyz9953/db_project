@@ -15,6 +15,14 @@ class StudentController
 //        Response::json($res);
 //    }
 
+
+    public function getList()
+    {
+        $res = DB::q("SELECT number, name, sex,enter_age,enter_time,grade,class FROM "
+            . DB::t("student"))->fetchAll();
+        Response::json($res);
+    }
+
     public function getStuInfo($id)
     {
         $res = $this->st->getInfoById($id);

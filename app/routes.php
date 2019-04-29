@@ -7,6 +7,7 @@ use NoahBuscher\Macaw\Macaw;
 
 Macaw::get("student/search", "StudentController@search");//查询 query=查询参数(姓名或学号)
 //只返回基本信息，点进去之后根据学号去请求student/(:num)
+Macaw::get("student/list", "StudentController@getList");
 Macaw::get("student/(:num)", "StudentController@getStuInfo");//根据学号获得学生信息及其所选课程情况（包括成绩）
 Macaw::post("student", "StudentController@addStuInfo");//增加学生信息
 Macaw::put("student/(:num)", "StudentController@putStuInfo");//修改学生信息,学号可以修改
