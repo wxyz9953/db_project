@@ -28,7 +28,7 @@ class StudentModel
 
     public function getCourseByIdWithGrade($id)
     {
-        $res = DB::q("SELECT c.id, c.number, c.name, c.teacher, c.credit, c.cancel_date, e.grade FROM "
+        $res = DB::q("SELECT c.id, c.number, c.name, c.teacher, c.credit, c.cancel_date, e.grades FROM "
             . DB::t("enroll") . " AS e LEFT JOIN " . DB::t("course") .
             " AS c ON e.course_id = c.number WHERE e.stu_id = :number", [':number' => $id])->fetchAll();
         return $res;
