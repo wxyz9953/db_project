@@ -18,11 +18,11 @@ class StudentController
 
     public function getList()
     {
-        var_dump($_GET);
         $page = intval($_GET['page']);
         $limit = intval($_GET['limit']);
+        $total = $page * $limit;
         $res = DB::q("SELECT number, name, sex,enter_age,enter_time,grade,class FROM "
-            . DB::t("student") . " LIMIT $page*$limit, $limit")->fetchAll();
+            . DB::t("student") . " LIMIT $total, $limit")->fetchAll();
         Response::json($res);
     }
 
