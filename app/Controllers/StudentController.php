@@ -17,6 +17,8 @@ class StudentController
 
     public function getList()
     {
+        var_dump($_SERVER);
+        exit;
         $page = intval($_GET['page'])-1;
         $limit = intval($_GET['limit']);
         $total = $page * $limit;
