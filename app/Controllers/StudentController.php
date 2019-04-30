@@ -9,15 +9,15 @@ class StudentController
         $this->st = new StudentModel();
     }
 
-    public function home()
-    {
-        var_dump($_GET);
-    }
+//    public function home()
+//    {
+//        var_dump($_GET);
+//    }
 
 
     public function getList()
     {
-        var_dump($_GET);
+        var_dump($_SERVER["REQUEST_URI"]);
         exit;
         $page = intval($_GET['page'])-1;
         $limit = intval($_GET['limit']);

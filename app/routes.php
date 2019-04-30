@@ -2,7 +2,7 @@
 
 use NoahBuscher\Macaw\Macaw;
 
-Macaw::get('/', "StudentController@home");
+//Macaw::get('/', "StudentController@home");
 
 
 Macaw::get("student/search", "StudentController@search");//查询 query=查询参数(姓名或学号)
