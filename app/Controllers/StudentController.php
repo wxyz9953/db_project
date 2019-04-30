@@ -9,11 +9,10 @@ class StudentController
         $this->st = new StudentModel();
     }
 
-//    public function home()
-//    {
-//        $res = $this->st->getInfoById("3018218135");
-//        Response::json($res);
-//    }
+    public function home()
+    {
+        var_dump($_GET);
+    }
 
 
     public function getList()
