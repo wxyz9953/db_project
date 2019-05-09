@@ -161,25 +161,31 @@ if ($query) {
             </div>
 
             <!--            -->
-            <div class="btn-toolbar">
+            <?php if (!$query) { ?>
+                <div class="btn-toolbar">
 
-                <div class="form-inline pull-right">
-                    <div class="form-group">
-                        <input id="query" class="form-control mr-sm-2" type="text" placeholder="搜索...">
-                        <button class="btn" onclick="search(<?php echo $id ?>)"><i class="icon-search"></i> 搜索</button>
+                    <div class="form-inline pull-right">
+                        <div class="form-group">
+                            <input id="query" class="form-control mr-sm-2" type="text" placeholder="搜索...">
+                            <button class="btn" onclick="search(<?php echo $id ?>)"><i class="icon-search"></i> 搜索
+                            </button>
+                        </div>
+
                     </div>
 
+                    <a href="addCourse.php?id=<?php echo $id; ?>&page=1">
+                        <button class="btn btn-primary"><i class="icon-plus"></i> 创建</button>
+                    </a>
+                    <a href="stuInfoExcel.php?id=<?php echo $_GET['id']; ?>">
+                        <button class="btn"><i class="icon-download-alt"></i> 导出</button>
+                    </a>
+
+                    <a href="analysis.php?id=<?php echo $_GET['id']; ?>">
+                        <button class="btn"><i class="icon-bar-chart"></i> 成绩分析</button>
+                    </a>
+
                 </div>
-
-                <a href="addCourse.php?id=<?php echo $id; ?>&page=1">
-                    <button class="btn btn-primary"><i class="icon-plus"></i> 创建</button>
-                </a>
-                <a href="stuExcel.php">
-                    <button class="btn"><i class="icon-download-alt"></i> 导出</button>
-                </a>
-
-            </div>
-
+            <?php } ?>
             <div class="well">
                 <table class="table">
                     <thead>
@@ -316,6 +322,7 @@ if ($query) {
                 alert("删除失败");
             },
             success: function () {
+                alert("删除成功");
                 window.location.reload();
             },
         });
@@ -333,6 +340,7 @@ if ($query) {
                 if (data) {
                     alert(data);
                 } else {
+                    alert("录入成功");
                     window.location.reload();
                 }
 

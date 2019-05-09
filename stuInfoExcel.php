@@ -5,10 +5,11 @@ require "DB.php";
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
+$id = intval($_GET['id']);
 function excel($title, $data)
 {
-
-    $path = __DIR__ . '\downloads\students.xlsx';
+    $id = intval($_GET['id']);
+    $path = __DIR__ . "\downloads\\$id-grades" . ".xlsx";
     $spreadsheet = new Spreadsheet();
     $sheet = $spreadsheet->getActiveSheet();
     $sheet->getColumnDimension('A')->setWidth(15);
@@ -26,19 +27,22 @@ function excel($title, $data)
     unset($spreadsheet);
 }
 
-$title = ["学号", "姓名", "性别", "入学年龄", "入学日期", "年级", "班级"];
-$res = DB::q("SELECT number,name,sex,enter_age,enter_time,grade,class FROM " . DB::t("student"))->fetchAll(PDO::FETCH_NUM);
+$title = ["课程编号", "学分", "分数","课程名称"];
+$res = DB::q("SELECT course_id, credit,grades, name FROM " . DB::t("enroll") . " AS e LEFT JOIN " . DB::t("course") . " AS c ON e.course_id = c.number WHERE e.stu_id=:s", [":s" => $_GET['id']])->fetchAll(PDO::FETCH_NUM);
+
 foreach ($res as &$i) {
-    $a = ["男", "女"];
-    $i[2] = $a[$i[2]];
+    if ($i[2] == -1) {
+        $i[2] = "成绩未出";
+    }
 }
+
 unset($i);
 excel($title, $res);
-$file = fopen(__DIR__ . '\downloads\students.xlsx', "r");
+$file = fopen(__DIR__ . "\downloads\\$id-grades.xlsx", "r");
 header("Content-type: application/octet-stream");
 header("Accept-Ranges: bytes");
-header("Accept-Length: " . filesize(__DIR__ . '\downloads\students.xlsx'));
-header("Content-Disposition: attachment; filename=" . 'students.xlsx');
-echo fread($file, filesize(__DIR__ . '\downloads\students.xlsx'));
+header("Accept-Length: " . filesize(__DIR__ . "\downloads\\$id-grades.xlsx"));
+header("Content-Disposition: attachment; filename=" . "$id-grades.xlsx");
+echo fread($file, filesize(__DIR__ . "\downloads\\$id-grades.xlsx"));
 fclose($file);
 ?>
