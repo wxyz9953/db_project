@@ -113,7 +113,7 @@ unset($v);
                             <td><?php echo $k["grade"] ?></td>
                             <td><?php echo $k["cancel_date"] ?></td>
                             <td>
-                                <a href="/user.php?id=<?php echo $k['number'] ?>"><i class="icon-pencil"></i></a>
+                                <a href="/editCourse.php?id=<?php echo $k['number'] ?>"><i class="icon-pencil"></i></a>
                                 <a href="#myModal" role="button" data-toggle="modal"
                                    onclick="test(<?php echo $k["number"] ?>)"><i class="icon-remove"></i></a>
                             </td>
@@ -192,12 +192,13 @@ unset($v);
 <script language="javascript">
     function del(code) {
         $.ajax({
-            url: "/delStu.php?id=" + code,
+            url: "/delCourse.php?id=" + code,
             type: 'get',
             error: function () {
                 alert("删除失败");
             },
             success: function () {
+                alert("删除成功");
                 window.location.reload();
             },
         });
