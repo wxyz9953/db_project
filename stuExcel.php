@@ -9,6 +9,8 @@ function excel($title, $data)
 {
 
     $path = __DIR__ . '\downloads\students.xlsx';
+    var_dump($path);
+    exit;
     $spreadsheet = new Spreadsheet();
     $sheet = $spreadsheet->getActiveSheet();
     $sheet->getColumnDimension('A')->setWidth(15);
