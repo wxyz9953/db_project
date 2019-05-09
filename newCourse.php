@@ -18,7 +18,7 @@ require "DB.php";
     <ul id="dashboard-menu" class="nav nav-list collapse in">
         <li><a href="index.php">主页</a></li>
         <li><a href="users.php?page=1">学生列表</a></li>
-        <li class="active"><a href="addUser.php">信息录入</a></li>
+        <li><a href="addUser.php">信息录入</a></li>
 
     </ul>
 
@@ -26,7 +26,7 @@ require "DB.php";
     <a href="#dashboard-menu" class="nav-header" data-toggle="collapse"><i class="icon-user"></i>课程</a>
     <ul id="dashboard-menu" class="nav nav-list collapse in">
         <li><a href="courses.php?page=1">课程列表</a></li>
-        <li><a href="newCourse.php">信息录入</a></li>
+        <li class="active"><a href="newCourse.php">信息录入</a></li>
     </ul>
 
 </div>
@@ -35,11 +35,12 @@ require "DB.php";
 
     <div class="header">
 
-        <h1 class="page-title">录入学生信息</h1>
+        <h1 class="page-title">录入课程信息</h1>
     </div>
 
     <ul class="breadcrumb">
         <li><a href="index.php">主页</a> <span class="divider">/</span></li>
+        <li><a href="courses.php?page=1">课程</a> <span class="divider">/</span></li>
         <li class="active">信息录入</li>
     </ul>
 
@@ -55,49 +56,38 @@ require "DB.php";
                                 <label class="control-label" for="textarea">学号</label>
                                 <div class="controls">
                                     <input style="width:280px; margin:0px 0px 0px 0px;height:25px;border-radius:5px;border:1px solid #DBDBDB;"
-                                           placeholder=" 学号必须是10位,示例:3017218140" name="number" id="number"
+                                           placeholder=" 课程编号必须是7位,示例:1000000" name="number" id="number"
                                            class="input-xlarge">
                                 </div>
                             </div>
                             <div class="control-group">
-                                <label class="control-label" for="textarea">姓名</label>
+                                <label class="control-label" for="textarea">课程名称</label>
                                 <div class="controls">
                                     <input style="width:280px; margin:0px 0px 0px 0px;height:25px;border-radius:5px;border:1px solid #DBDBDB;"
                                            name="name" class="input-xlarge">
                                 </div>
                             </div>
-                            <div class="control-group">
-                                <label class="control-label" for="textarea">性别</label>
-                                <div class="controls">
-                                    <div class="inline" style="margin:5px 0px 0px 0px">
-                                        男性：
-                                        <input type="radio" name="sex" value="0"/>
-                                        女性：
-                                        <input type="radio" name="sex" value="1"/>
-                                    </div>
-                                </div>
-                            </div>
 
                             <div class="control-group">
-                                <label class="control-label" for="textarea">入学年龄</label>
+                                <label class="control-label" for="textarea">任课教师</label>
                                 <div class="controls">
-                                    <input name="enter_age"
+                                    <input name="teacher"
                                            style="width:280px; margin:0px 0px 0px 0px;height:25px;border-radius:5px;border:1px solid #DBDBDB;"
                                            class="input-xlarge">
                                 </div>
                             </div>
 
                             <div class="control-group">
-                                <label class="control-label" for="textarea">入学时间</label>
+                                <label class="control-label" for="textarea">学分</label>
                                 <div class="controls">
                                     <input style="width:280px; margin:0px 0px 0px 0px;height:25px;border-radius:5px;border:1px solid #DBDBDB;"
-                                           placeholder=" 填写入学的年份" name="enter_time"
+                                           name="credit"
                                            class="input-xlarge">
                                 </div>
                             </div>
 
                             <div class="control-group">
-                                <label class="control-label" for="textarea">年级</label>
+                                <label class="control-label" for="textarea">适合年级</label>
                                 <div class="controls">
                                     <input placeholder=" 例如大一，填写1" name="grade"
                                            style="width:280px; margin:0px 0px 0px 0px;height:25px;border-radius:5px;border:1px solid #DBDBDB;"
@@ -106,16 +96,15 @@ require "DB.php";
                             </div>
 
                             <div class="control-group">
-                                <label class="control-label" for="textarea">班级</label>
+                                <label class="control-label" for="textarea">取消年份</label>
                                 <div class="controls">
-                                    <input name="class"
+                                    <input placeholder=" 若没有取消计划可不填" name="cancel_date"
                                            style="width:280px; margin:0px 0px 0px 0px;height:25px;border-radius:5px;border:1px solid #DBDBDB;"
                                            class="input-xlarge">
                                 </div>
                             </div>
 
                             <div class="pull-right">
-                                <br>
                                 <button class="btn btn-primary" onclick="add()" style="margin: 0px 0px 0px -950px;"><i
                                             class="icon-save"></i> 录入
                                 </button>
@@ -134,10 +123,10 @@ require "DB.php";
 </div>
 
 <script>
-    function add(number) {
+    function add() {
         $.ajax({
             type: "POST",
-            url: "/addStu.php",
+            url: "/addClass.php",
             data: $('#form1').serialize(),
             dataType: "json",
             success: function (data) {

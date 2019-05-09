@@ -13,6 +13,10 @@ if ($sex != 0 && $sex != 1) {
     exit;
 }
 $enter_age = intval($_POST['enter_age']);
+if ($enter_age < 10 || $enter_time > 50) {
+    echo json_encode("参数错误");
+    exit;
+}
 $enter_time = intval($_POST['enter_time']);
 $grade = intval($_POST['grade']);
 $class = intval($_POST['class']);
