@@ -8,9 +8,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 function excel($title, $data)
 {
 
-    $path = __DIR__ . '\downloads\students.xlsx';
-    var_dump($path);
-    exit;
+    $path = __DIR__ . '/downloads/students.xlsx';
     $spreadsheet = new Spreadsheet();
     $sheet = $spreadsheet->getActiveSheet();
     $sheet->getColumnDimension('A')->setWidth(15);
