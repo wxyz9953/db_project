@@ -9,7 +9,7 @@ $id = intval($_GET['id']);
 function excel($title, $data)
 {
     $id = intval($_GET['id']);
-    $path = __DIR__ . "\downloads\\$id-grades" . ".xlsx";
+    $path = __DIR__ . "/downloads/$id-grades" . ".xlsx";
     $spreadsheet = new Spreadsheet();
     $sheet = $spreadsheet->getActiveSheet();
     $sheet->getColumnDimension('A')->setWidth(15);
@@ -38,11 +38,11 @@ foreach ($res as &$i) {
 
 unset($i);
 excel($title, $res);
-$file = fopen(__DIR__ . "\downloads\\$id-grades.xlsx", "r");
+$file = fopen(__DIR__ . "/downloads/$id-grades.xlsx", "r");
 header("Content-type: application/octet-stream");
 header("Accept-Ranges: bytes");
-header("Accept-Length: " . filesize(__DIR__ . "\downloads\\$id-grades.xlsx"));
+header("Accept-Length: " . filesize(__DIR__ . "/downloads/$id-grades.xlsx"));
 header("Content-Disposition: attachment; filename=" . "$id-grades.xlsx");
-echo fread($file, filesize(__DIR__ . "\downloads\\$id-grades.xlsx"));
+echo fread($file, filesize(__DIR__ . "/downloads/$id-grades.xlsx"));
 fclose($file);
 ?>

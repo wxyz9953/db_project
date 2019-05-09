@@ -34,11 +34,11 @@ foreach ($res as &$i) {
 }
 unset($i);
 excel($title, $res);
-$file = fopen(__DIR__ . '\downloads\students.xlsx', "r");
+$file = fopen(__DIR__ . '/downloads/students.xlsx', "r");
 header("Content-type: application/octet-stream");
 header("Accept-Ranges: bytes");
-header("Accept-Length: " . filesize(__DIR__ . '\downloads\students.xlsx'));
+header("Accept-Length: " . filesize(__DIR__ . '/downloads/students.xlsx'));
 header("Content-Disposition: attachment; filename=" . 'students.xlsx');
-echo fread($file, filesize(__DIR__ . '\downloads\students.xlsx'));
+echo fread($file, filesize(__DIR__ . '/downloads/students.xlsx'));
 fclose($file);
 ?>
