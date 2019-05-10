@@ -63,7 +63,7 @@ if ($query) {
     </ul>
 
 
-    <a href="#dashboard-menu" class="nav-header" data-toggle="collapse"><i class="icon-user"></i>课程</a>
+    <a href="#dashboard-menu" class="nav-header" data-toggle="collapse"><i class="icon-table"></i>课程</a>
     <ul id="dashboard-menu" class="nav nav-list collapse in">
         <li><a href="courses.php?page=1">课程列表</a></li>
         <li><a href="newCourse.php">信息录入</a></li>
@@ -75,7 +75,11 @@ if ($query) {
 
     <div class="header">
 
-        <h1 class="page-title">查询结果</h1>
+        <h1 class="page-title"><?php if ($query) {
+                echo "查询结果";
+            } else {
+                echo "选课信息";
+            } ?></h1>
     </div>
 
     <ul class="breadcrumb">

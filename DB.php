@@ -6,6 +6,7 @@
  * All rights reserved.
  */
 require "config.php";
+
 class DB
 {
     static $db = null;

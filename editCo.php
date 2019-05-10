@@ -11,11 +11,12 @@ $teacher = htmlspecialchars($_POST['teacher']);
 $credit = intval($_POST['credit']);
 $grade = intval($_POST['grade']);
 $cancel_date = $_POST['cancel_date'];
+$id = DB::q("SELECT id FROM " . DB::t("course") . " WHERE number=:n", [':n' => $number])->fetch()['id'];
 $res = DB::update(DB::t("course"), [
     'name' => $name,
     'teacher' => $teacher,
     'credit' => $credit,
     'grade' => $grade,
     'cancel_date' => $cancel_date
-], $number);
+], $id);
 ?>

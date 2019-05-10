@@ -1,16 +1,29 @@
 <?php
 require "DB.php";
-$temp = null;
-$page = intval($_GET['page']) - 1;
-if ($page < 0) {
-    require "404.html";
-    exit;
+@$query = $_GET['query'];
+if (is_string($query)) {
+    $str = split($query);
+    $res = DB::q("SELECT number,name,teacher,credit,grade,cancel_date FROM "
+        . DB::t("course") . " WHERE name LIKE(\"$str\")")->fetchAll();
+} else if (is_numeric($query)) {
+    $res = DB::q("SELECT number,name,teacher,credit,grade,cancel_date FROM "
+        . DB::t("course") . " WHERE number=:n", [':n' => $query])->fetchAll();
+
+} else {
+    $page = intval($_GET['page']) - 1;
+    if ($page < 0) {
+        require "404.html";
+        exit;
+    }
+    $limit = 10;
+    $total = $page * $limit;
+    $res = DB::q("SELECT number, name, teacher,credit,grade,cancel_date FROM "
+        . DB::t("course") . " LIMIT $total, $limit")->fetchAll();
 }
+
 $arr = ["", "一", "二", "三", "四"];
-$limit = 10;
-$total = $page * $limit;
-$res = DB::q("SELECT number, name, teacher,credit,grade,cancel_date FROM "
-    . DB::t("course") . " LIMIT $total, $limit")->fetchAll();
+
+
 $count = DB::q("SELECT COUNT(*) FROM " . DB::t("course"))->fetch()['COUNT(*)'];
 $totalPage = ceil($count / 10) - 1;
 foreach ($res as &$v) {
@@ -20,6 +33,19 @@ foreach ($res as &$v) {
     }
 }
 unset($v);
+function split($query)
+{
+    $array = array();
+    for ($i = 0; $i < mb_strlen($query, 'utf-8'); $i++) {
+        $array[] = mb_substr($query, $i, 1, 'utf-8');
+    }
+    $str = "%";
+    for ($i = 0; $i < count($array); $i++) {
+        $str .= $array[$i] . '%';
+    }
+    return $str;
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -42,7 +68,7 @@ unset($v);
     </ul>
 
 
-    <a href="#dashboard-menu" class="nav-header" data-toggle="collapse"><i class="icon-user"></i>课程</a>
+    <a href="#dashboard-menu" class="nav-header" data-toggle="collapse"><i class="icon-table"></i>课程</a>
     <ul id="dashboard-menu" class="nav nav-list collapse in">
         <li class="active"><a href="courses.php?page=1">课程列表</a></li>
         <li><a href="newCourse.php">信息录入</a></li>
@@ -54,8 +80,8 @@ unset($v);
 
     <div class="header">
 
-        <h1 class="page-title">课程列表(第<?php echo $_GET['page'];
-            echo "页"; ?>)</h1>
+        <h1 class="page-title"><?php @$p = $_GET['page'];
+            if ($p) echo "课程列表(第" . $p . "页)"; else echo "搜索结果"; ?></h1>
     </div>
 
     <ul class="breadcrumb">
@@ -65,26 +91,27 @@ unset($v);
 
     <div class="container-fluid">
         <div class="row-fluid">
+            <?php if (!$query) { ?>
+                <div class="btn-toolbar">
 
-            <div class="btn-toolbar">
+                    <form class="form-inline pull-right" role="search" action="/courses.php" method="get"
+                          target="_blank">
+                        <div class="form-group">
+                            <input name="query" class="form-control mr-sm-2" type="text" placeholder="搜索...">
+                            <button class="btn" type="submit"><i class="icon-search"></i> 搜索</button>
+                        </div>
 
-                <form class="form-inline pull-right" role="search" action="/search.php" method="get"
-                      target="_blank">
-                    <div class="form-group">
-                        <input name="query" class="form-control mr-sm-2" type="text" placeholder="搜索...">
-                        <button class="btn" type="submit"><i class="icon-search"></i> 搜索</button>
-                    </div>
+                    </form>
 
-                </form>
+                    <a href="newCourse.php">
+                        <button class="btn btn-primary"><i class="icon-plus"></i> 创建</button>
+                    </a>
+                    <a href="courseExcel.php">
+                        <button class="btn"><i class="icon-download-alt"></i> 导出</button>
+                    </a>
 
-                <a href="newCourse.php">
-                    <button class="btn btn-primary"><i class="icon-plus"></i> 创建</button>
-                </a>
-                <a href="stuExcel.php">
-                    <button class="btn"><i class="icon-download-alt"></i> 导出</button>
-                </a>
-
-            </div>
+                </div>
+            <?php } ?>
             <div class="well">
                 <table class="table">
                     <thead>
@@ -121,30 +148,35 @@ unset($v);
                     <?php } ?>
                     </tbody>
                 </table>
-                <div class="pagination pull-right">
-                    <br>
-                    <ul>
-                        <li>
-                            <a <?php if ($page == 0) echo "javascript:void(0);" ?>href="/courses.php?page=<?php
-                            echo $page ?>">上一页</a>
-                        </li>
-                        <li <?php if ($_GET['page'] == 1) echo "class=\"active\"" ?>><a href="/courses.php?page=1">1</a>
-                        </li>
-                        <li <?php if ($_GET['page'] == 2) echo "class=\"active\"" ?>><a href="/courses.php?page=2">2</a>
-                        </li>
-                        <li <?php if ($_GET['page'] == 3) echo "class=\"active\"" ?>><a href="/courses.php?page=3">3</a>
-                        </li>
-                        <li><a href="">...</a></li>
-                        <li>
-                            <a <?php if ($page == $totalPage) echo "javascript:void(0);"; ?>href="/courses.php?page=<?php $page += 1;
-                            echo intval($_GET['page']) + 1 ?>">下一页</a>
-                        </li>
-                        <li>
-                            <a href="/courses.php?page=<?php
-                            echo $totalPage + 1 ?>">尾页</a>
-                        </li>
-                    </ul>
-                </div>
+                <?php if (!$query) { ?>
+                    <div class="pagination pull-right">
+                        <br>
+                        <ul>
+                            <li>
+                                <a <?php if ($page == 0) echo "javascript:void(0);" ?>href="/courses.php?page=<?php
+                                echo $page ?>">上一页</a>
+                            </li>
+                            <li <?php if ($_GET['page'] == 1) echo "class=\"active\"" ?>><a
+                                        href="/courses.php?page=1">1</a>
+                            </li>
+                            <li <?php if ($_GET['page'] == 2) echo "class=\"active\"" ?>><a
+                                        href="/courses.php?page=2">2</a>
+                            </li>
+                            <li <?php if ($_GET['page'] == 3) echo "class=\"active\"" ?>><a
+                                        href="/courses.php?page=3">3</a>
+                            </li>
+                            <li><a href="">...</a></li>
+                            <li>
+                                <a <?php if ($page == $totalPage) echo "javascript:void(0);"; ?>href="/courses.php?page=<?php $page += 1;
+                                echo intval($_GET['page']) + 1 ?>">下一页</a>
+                            </li>
+                            <li>
+                                <a href="/courses.php?page=<?php
+                                echo $totalPage + 1 ?>">尾页</a>
+                            </li>
+                        </ul>
+                    </div>
+                <?php } ?>
             </div>
 
 

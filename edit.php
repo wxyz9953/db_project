@@ -12,6 +12,7 @@ $enter_age = intval($_POST['enter_age']);
 $enter_time = intval($_POST['enter_time']);
 $grade = intval($_POST['grade']);
 $class = intval($_POST['class']);
+$id = DB::q("SELECT id FROM " . DB::t("student") . " WHERE number=:n", [':n' => $number])->fetch()['id'];
 $res = DB::update(DB::t("student"), [
     'name' => $name,
     'sex' => $sex,
@@ -19,6 +20,6 @@ $res = DB::update(DB::t("student"), [
     'enter_time' => $enter_time,
     'grade' => $grade,
     'class' => $class
-], $number);
+], $id);
 
 ?>
