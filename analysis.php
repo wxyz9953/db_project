@@ -1,29 +1,53 @@
 <?php
 require "DB.php";
 $id = intval($_GET['id']);
-$stuInfo = DB::q("SELECT number, name, grade, class FROM " . DB::t("student") . " WHERE number = :i", [":i" => $id])->fetch();
+$type = $_GET['type'];
+if ($type == "stu") {
+    $stuInfo = DB::q("SELECT number, name, grade, class FROM " . DB::t("student") . " WHERE number = :i", [":i" => $id])->fetch();
 //大于 小于等于
-$count = DB::q("SELECT count(case when grades=100 then 1 end),
+    $count = DB::q("SELECT count(case when grades=100 then 1 end),
                             count(case when grades between 89 and 99 then 1 end),
                             count(case when grades between 79 and 89 then 1 end),
                             count(case when grades between 69 and 79 then 1 end),
                             count(case when grades between 59 and 69 then 1 end),
                             count(case when grades between 0 and 59 then 1 end) 
                             FROM enroll WHERE stu_id = :id", [':id' => $id])
-    ->fetch(PDO::FETCH_NUM);
-$count = array_reverse($count);
-$weight = DB::q("SELECT e.grades, c.grade FROM " . DB::t("enroll") . " AS e LEFT JOIN " . DB::t("course") . " AS c ON e.course_id = c.number WHERE e.stu_id=:i AND e.grades >-1", [':i' => $id])->fetchAll();
-$wscore = 0;
-$we = 0;
-foreach ($weight as $w) {
-    $wscore += $w["grades"] * $w['grade'];
-    $we += $w['grade'];
-}
-$wscore /= $we;
+        ->fetch(PDO::FETCH_NUM);
+    $count = array_reverse($count);
+    $weight = DB::q("SELECT e.grades, c.grade FROM " . DB::t("enroll") . " AS e LEFT JOIN " . DB::t("course") . " AS c ON e.course_id = c.number WHERE e.stu_id=:i AND e.grades >-1", [':i' => $id])->fetchAll();
+    $wscore = 0;
+    $we = 0;
+    foreach ($weight as $w) {
+        $wscore += $w["grades"] * $w['grade'];
+        $we += $w['grade'];
+    }
+    $wscore /= $we;
 
-$avg = DB::q("SELECT AVG(grades) AS avg FROM " . DB::t("enroll") . " WHERE stu_id=:s AND grades>-1", [':s' => $id])->fetch()['avg'];
-$max = DB::q("SELECT MAX(grades) AS max FROM " . DB::t("enroll") . " WHERE stu_id=:s AND grades>-1", [':s' => $id])->fetch()['max'];
-$min = DB::q("SELECT MIN(grades) AS min FROM " . DB::t("enroll") . " WHERE stu_id=:s AND grades>-1", [':s' => $id])->fetch()['min'];
+    $avg = DB::q("SELECT AVG(grades) AS avg FROM " . DB::t("enroll") . " WHERE stu_id=:s AND grades>-1", [':s' => $id])->fetch()['avg'];
+    $max = DB::q("SELECT MAX(grades) AS max FROM " . DB::t("enroll") . " WHERE stu_id=:s AND grades>-1", [':s' => $id])->fetch()['max'];
+    $min = DB::q("SELECT MIN(grades) AS min FROM " . DB::t("enroll") . " WHERE stu_id=:s AND grades>-1", [':s' => $id])->fetch()['min'];
+} else if ($type == "course") {
+    $courseInfo = DB::q("SELECT name,teacher,credit,grade,cancel_date FROM " . DB::t("course") . " WHERE number=:i", [':i' => $id])->fetch();
+    $count = DB::q("SELECT count(case when grades=100 then 1 end),
+                            count(case when grades between 89 and 99 then 1 end),
+                            count(case when grades between 79 and 89 then 1 end),
+                            count(case when grades between 69 and 79 then 1 end),
+                            count(case when grades between 59 and 69 then 1 end),
+                            count(case when grades between 0 and 59 then 1 end) 
+                            FROM enroll WHERE course_id = :id", [':id' => $id])
+        ->fetch(PDO::FETCH_NUM);
+    $count = array_reverse($count);
+    $res = DB::q("SELECT AVG(grades) as a FROM " . DB::t("enroll") . " WHERE course_id=:c AND grades > -1", [':c' => $id])->fetch();
+    $avg = $res["a"];
+    $res = DB::q("SELECT COUNT(*) as a FROM " . DB::t("enroll") . " WHERE course_id=:c AND grades = -1", [':c' => $id])->fetch();
+    $num = $res["a"];
+    $max = DB::q("SELECT MAX(grades) AS max FROM " . DB::t("enroll") . " WHERE course_id=:s AND grades>-1", [':s' => $id])->fetch()['max'];
+    $min = DB::q("SELECT MIN(grades) AS min FROM " . DB::t("enroll") . " WHERE course_id=:s AND grades>-1", [':s' => $id])->fetch()['min'];
+} else {
+    require "404.html";
+    exit();
+}
+
 ?>
 
 
@@ -41,7 +65,7 @@ $min = DB::q("SELECT MIN(grades) AS min FROM " . DB::t("enroll") . " WHERE stu_i
     <a href="#dashboard-menu" class="nav-header" data-toggle="collapse"><i class="icon-user"></i>学生</a>
     <ul id="dashboard-menu" class="nav nav-list collapse in">
         <li><a href="index.php">主页</a></li>
-        <li class="active"><a href="users.php?page=1">学生列表</a></li>
+        <li><a href="users.php?page=1">学生列表</a></li>
         <li><a href="addUser.php">信息录入</a></li>
 
     </ul>
@@ -65,100 +89,190 @@ $min = DB::q("SELECT MIN(grades) AS min FROM " . DB::t("enroll") . " WHERE stu_i
 
     <ul class="breadcrumb">
         <li><a href="index.php">主页</a> <span class="divider">/</span></li>
-        <li class="active">学生</li>
+        <li class="active"><?php if ($type == "stu") echo "学生"; else if ($type == "course") echo "课程"; ?></li>
     </ul>
 
     <div class="container-fluid">
+
         <div class="row-fluid">
+            <?php if ($type == "stu") { ?>
+                <div class="block">
+                    <a href="#page-stats" class="block-heading" data-toggle="collapse">学生信息</a>
+                    <div id="page-stats" class="block-body collapse in">
 
-            <!--            -->
-            <div class="block">
-                <a href="#page-stats" class="block-heading" data-toggle="collapse">学生信息</a>
-                <div id="page-stats" class="block-body collapse in">
+                        <div class="stat-widget-container">
+                            <div class="stat-widget">
+                                <div class="stat-button">
+                                    <p class="detail">学号</p>
+                                    <p class="detail">
+                                        <?php
+                                        echo $stuInfo['number'];
+                                        ?>
+                                    </p>
 
-                    <div class="stat-widget-container">
-                        <div class="stat-widget">
-                            <div class="stat-button">
-                                <p class="detail">学号</p>
-                                <p class="detail">
-                                    <?php
-                                    echo $stuInfo['number'];
-                                    ?>
-                                </p>
-
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="stat-widget">
-                            <div class="stat-button">
-                                <p class="detail">姓名</p>
-                                <p class="detail">
-                                    <?php
-                                    echo $stuInfo['name'];
-                                    ?>
-                                </p>
+                            <div class="stat-widget">
+                                <div class="stat-button">
+                                    <p class="detail">姓名</p>
+                                    <p class="detail">
+                                        <?php
+                                        echo $stuInfo['name'];
+                                        ?>
+                                    </p>
 
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="stat-widget">
-                            <div class="stat-button">
-                                <p class="detail">年级</p>
-                                <p class="detail">
-                                    <?php
-                                    echo $stuInfo['grade'] . '年级';
-                                    ?>
-                                </p>
+                            <div class="stat-widget">
+                                <div class="stat-button">
+                                    <p class="detail">年级</p>
+                                    <p class="detail">
+                                        <?php
+                                        echo $stuInfo['grade'] . '年级';
+                                        ?>
+                                    </p>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="stat-widget">
-                            <div class="stat-button">
-                                <p class="detail">班级</p>
-                                <p class="detail">
-                                    <?php
-                                    echo $stuInfo['class'] . "班";
-                                    ?>
-                                </p>
+                            <div class="stat-widget">
+                                <div class="stat-button">
+                                    <p class="detail">班级</p>
+                                    <p class="detail">
+                                        <?php
+                                        echo $stuInfo['class'] . "班";
+                                        ?>
+                                    </p>
+                                </div>
                             </div>
-                        </div>
 
+                        </div>
                     </div>
                 </div>
-            </div>
+            <?php } ?>
+            <?php if ($type == "course") { ?>
+                <div class="block">
+                    <a href="#page-stats" class="block-heading" data-toggle="collapse">课程信息</a>
+                    <div id="page-stats" class="block-body collapse in">
+
+                        <div class="stat-widget-container">
+                            <div class="stat-widget">
+                                <div class="stat-button">
+                                    <p class="detail">课程名称</p>
+                                    <p class="detail">
+                                        <?php
+                                        echo $courseInfo['name'];
+                                        ?>
+                                    </p>
+
+                                </div>
+                            </div>
+
+                            <div class="stat-widget">
+                                <div class="stat-button">
+                                    <p class="detail">授课教师</p>
+                                    <p class="detail">
+                                        <?php
+                                        echo $courseInfo['teacher'];
+                                        ?>
+                                    </p>
+
+                                </div>
+                            </div>
+
+                            <div class="stat-widget">
+                                <div class="stat-button">
+                                    <p class="detail">学分</p>
+                                    <p class="detail">
+                                        <?php
+                                        echo $courseInfo['credit'];
+                                        ?>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="stat-widget">
+                                <div class="stat-button">
+                                    <p class="detail">适合年级</p>
+                                    <p class="detail">
+                                        <?php
+                                        $arr = ["", "大一", "大二", "大三", "大四"];
+                                        echo $arr[$courseInfo['grade']];
+                                        ?>
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            <?php } ?>
             <div class="row-fluid">
                 <div class="block span6">
                     <a href="#tablewidget" class="block-heading" data-toggle="collapse">成绩分布</a>
                     <div id="tablewidget" class="block-body collapse in">
-                        <div id="container" class="pull-left" style=" width: 600px;height: 300px;"></div>
+                        <div id=<?php if ($type == "stu") echo "container"; else echo "container1"; ?> class="pull-left"
+                             style=" width: 600px;height: 300px;"></div>
                     </div>
                 </div>
-                <div class="block span6">
-                    <a href="#tablewidget1" class="block-heading" data-toggle="collapse">成绩概述</a>
-                    <div id="tablewidget1" class="block-body collapse in">
-                        <table class="table">
-                            <tbody>
-                            <tr>
-                                <td>加权成绩</td>
-                                <td><?php echo round($wscore, 3) ?></td>
-                            </tr>
-                            <tr>
-                                <td>平均成绩</td>
-                                <td><?php echo round($avg, 6) ?></td>
-                            </tr>
-                            <tr>
-                                <td>最高分数</td>
-                                <td><?php echo $max ?></td>
-                            </tr>
-                            <tr>
-                                <td>最低分数</td>
-                                <td><?php echo $min ?></td>
-                            </tr>
+                <?php if ($type == 'stu') { ?>
+                    <div class="block span6">
+                        <a href="#tablewidget1" class="block-heading" data-toggle="collapse">成绩概述</a>
+                        <div id="tablewidget1" class="block-body collapse in">
+                            <table class="table">
+                                <tbody>
+                                <tr>
+                                    <td>加权成绩</td>
+                                    <td><?php echo round($wscore, 3) ?></td>
+                                </tr>
+                                <tr>
+                                    <td>平均成绩</td>
+                                    <td><?php echo round($avg, 6) ?></td>
+                                </tr>
+                                <tr>
+                                    <td>最高分数</td>
+                                    <td><?php echo $max ?></td>
+                                </tr>
+                                <tr>
+                                    <td>最低分数</td>
+                                    <td><?php echo $min ?></td>
+                                </tr>
 
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
+                <?php } ?>
+
+                <?php if ($type == 'course') { ?>
+                    <div class="block span6">
+                        <a href="#tablewidget1" class="block-heading" data-toggle="collapse">成绩概述</a>
+                        <div id="tablewidget1" class="block-body collapse in">
+                            <table class="table">
+                                <tbody>
+                                <tr>
+                                    <td>平均成绩</td>
+                                    <td><?php echo round($avg, 3) ?></td>
+                                </tr>
+                                <tr>
+                                    <td>选课人数(成绩未出)</td>
+                                    <td><?php echo $num ?></td>
+                                </tr>
+                                <tr>
+                                    <td>最高分数</td>
+                                    <td><?php echo $max ?></td>
+                                </tr>
+                                <tr>
+                                    <td>最低分数</td>
+                                    <td><?php echo $min ?></td>
+                                </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                <?php } ?>
             </div>
 
             <?php require "footer.php" ?>
@@ -180,7 +294,9 @@ $min = DB::q("SELECT MIN(grades) AS min FROM " . DB::t("enroll") . " WHERE stu_i
 
     <script type="text/javascript" src="echarts.common.min.js"></script>
     <script type="text/javascript">
-        var dom = document.getElementById("container");
+        var dom = document.getElementById("<?php if ($type == "stu") echo "container"; else {
+            echo "container1";
+        }?>");
         var myChart = echarts.init(dom);
         var app = {};
         option = null;

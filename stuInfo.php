@@ -166,7 +166,7 @@ if ($query) {
                         <button class="btn"><i class="icon-download-alt"></i> 导出</button>
                     </a>
 
-                    <a href="analysis.php?id=<?php echo $_GET['id']; ?>">
+                    <a href="analysis.php?id=<?php echo $_GET['id']; ?>&type=stu">
                         <button class="btn"><i class="icon-bar-chart"></i> 成绩分析</button>
                     </a>
 

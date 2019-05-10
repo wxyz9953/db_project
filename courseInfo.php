@@ -113,7 +113,7 @@ $students = DB::q("SELECT e.id,s.number,s.name,s.grade,s.class,e.grades FROM " .
                 <button class="btn"><i class="icon-download-alt"></i> 导出</button>
             </a>
 
-            <a href="analysis.php?id=<?php echo $_GET['id']; ?>">
+            <a href="analysis.php?id=<?php echo $_GET['id']; ?>&type=course">
                 <button class="btn"><i class="icon-bar-chart"></i> 成绩分析</button>
             </a>
 

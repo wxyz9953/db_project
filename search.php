@@ -56,7 +56,6 @@ if (is_numeric($data)) {
     </ul>
 
 
-
     <a href="#dashboard-menu" class="nav-header" data-toggle="collapse"><i class="icon-table"></i>课程</a>
     <ul id="dashboard-menu" class="nav nav-list collapse in">
         <li><a href="courses.php?page=1">课程列表</a></li>
@@ -121,7 +120,7 @@ if (is_numeric($data)) {
                                 <?php echo $k["number"] ?>
                             </td>
                             <td>
-                                <a href="stuInfo.php?id=<?php echo $k['number'] ?>"><?php echo $k["name"]; ?></a>
+                                <a href="stuInfo.php?id=<?php echo $k['number'] ?>&page=1"><?php echo $k["name"]; ?></a>
                             </td>
                             <td><?php if ($k["sex"]) {
                                     echo "女";
