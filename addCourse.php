@@ -33,6 +33,7 @@ for ($i = $page * 10; $i < $limit + $page * 10; $i++) {
         <li><a href="index.php">主页</a></li>
         <li class="active"><a href="users.php?page=1">学生列表</a></li>
         <li><a href="addUser.php">信息录入</a></li>
+<!--        <li><a href="quick.php">成绩快速录入</a></li>-->
 
     </ul>
 

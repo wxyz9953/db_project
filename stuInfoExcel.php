@@ -6,10 +6,12 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 $id = intval($_GET['id']);
+
 function excel($title, $data)
 {
     $id = intval($_GET['id']);
-    $path = __DIR__ . "/downloads/$id-grades" . ".xlsx";
+    $name = DB::q("SELECT name FROM " . DB::t("student") . " WHERE number=:n", [':n' => $id])->fetch()['name'];
+    $path = __DIR__ . "/downloads/$id-$name" . "成绩表" . ".xlsx";
     $spreadsheet = new Spreadsheet();
     $sheet = $spreadsheet->getActiveSheet();
     $sheet->getColumnDimension('A')->setWidth(15);
@@ -27,7 +29,7 @@ function excel($title, $data)
     unset($spreadsheet);
 }
 
-$title = ["课程编号", "学分", "分数","课程名称"];
+$title = ["课程编号", "学分", "分数", "课程名称"];
 $res = DB::q("SELECT course_id, credit,grades, name FROM " . DB::t("enroll") . " AS e LEFT JOIN " . DB::t("course") . " AS c ON e.course_id = c.number WHERE e.stu_id=:s", [":s" => $_GET['id']])->fetchAll(PDO::FETCH_NUM);
 
 foreach ($res as &$i) {
@@ -38,11 +40,12 @@ foreach ($res as &$i) {
 
 unset($i);
 excel($title, $res);
-$file = fopen(__DIR__ . "/downloads/$id-grades.xlsx", "r");
+$name = DB::q("SELECT name FROM " . DB::t("student") . " WHERE number=:n", [':n' => $id])->fetch()['name'];
+$file = fopen(__DIR__ . "/downloads/$id-$name" . "成绩表.xlsx", "r");
 header("Content-type: application/octet-stream");
 header("Accept-Ranges: bytes");
-header("Accept-Length: " . filesize(__DIR__ . "/downloads/$id-grades.xlsx"));
-header("Content-Disposition: attachment; filename=" . "$id-grades.xlsx");
-echo fread($file, filesize(__DIR__ . "/downloads/$id-grades.xlsx"));
+header("Accept-Length: " . filesize(__DIR__ . "/downloads/$id-$name" . "成绩表.xlsx"));
+header("Content-Disposition: attachment; filename=" . "$id-$name" . "成绩表.xlsx");
+echo fread($file, filesize(__DIR__ . "/downloads/$id-$name" . "成绩表.xlsx"));
 fclose($file);
 ?>

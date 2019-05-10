@@ -8,7 +8,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 function excel($title, $data)
 {
 
-    $path = __DIR__ . '/downloads/students.xlsx';
+    $path = __DIR__ . '/downloads/学生信息.xlsx';
     $spreadsheet = new Spreadsheet();
     $sheet = $spreadsheet->getActiveSheet();
     $sheet->getColumnDimension('A')->setWidth(15);
@@ -34,11 +34,11 @@ foreach ($res as &$i) {
 }
 unset($i);
 excel($title, $res);
-$file = fopen(__DIR__ . '/downloads/students.xlsx', "r");
+$file = fopen(__DIR__ . '/downloads/学生信息.xlsx', "r");
 header("Content-type: application/octet-stream");
 header("Accept-Ranges: bytes");
-header("Accept-Length: " . filesize(__DIR__ . '/downloads/students.xlsx'));
-header("Content-Disposition: attachment; filename=" . 'students.xlsx');
-echo fread($file, filesize(__DIR__ . '/downloads/students.xlsx'));
+header("Accept-Length: " . filesize(__DIR__ . '/downloads/学生信息.xlsx'));
+header("Content-Disposition: attachment; filename=" . '学生信息.xlsx');
+echo fread($file, filesize(__DIR__ . '/downloads/学生信息.xlsx'));
 fclose($file);
 ?>
