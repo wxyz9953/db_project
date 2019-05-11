@@ -22,7 +22,7 @@ $students = DB::q("SELECT e.id,s.number,s.name,s.grade,s.class,e.grades FROM " .
         <li><a href="index.php">主页</a></li>
         <li><a href="users.php?page=1">学生列表</a></li>
         <li><a href="addUser.php">信息录入</a></li>
-<!--        <li><a href="quick.php">成绩快速录入</a></li>-->
+        <!--        <li><a href="quick.php">成绩快速录入</a></li>-->
 
     </ul>
 
@@ -51,7 +51,7 @@ $students = DB::q("SELECT e.id,s.number,s.name,s.grade,s.class,e.grades FROM " .
 
     <ul class="breadcrumb">
         <li><a href="index.php">主页</a> <span class="divider">/</span></li>
-        <li class="active">学生</li>
+        <li class="active">课程</li>
     </ul>
 
     <div class="container-fluid">
@@ -114,6 +114,9 @@ $students = DB::q("SELECT e.id,s.number,s.name,s.grade,s.class,e.grades FROM " .
                 </div>
             </div>
 
+            <a href="addStudent.php?id=<?php echo $_GET['id']; ?>&page=1">
+                <button class="btn btn-primary"><i class="icon-plus"></i> 创建</button>
+            </a>
 
             <a href="courseInfoExcel.php?id=<?php echo $_GET['id']; ?>">
                 <button class="btn"><i class="icon-download-alt"></i> 导出</button>
@@ -134,7 +137,7 @@ $students = DB::q("SELECT e.id,s.number,s.name,s.grade,s.class,e.grades FROM " .
                     <th>班级</th>
                     <th>分数</th>
 
-<!--                    <th style="width: 26px;"></th>-->
+                    <!--                    <th style="width: 26px;"></th>-->
                 </tr>
                 </thead>
                 <tbody>

@@ -19,8 +19,7 @@ if (!$query) {
     $page = intval($_GET['page']) - 1;
     $limit = 10;
     $total = $page * $limit;
-    $courses = DB::q("SELECT c.number, c.name,c.teacher, c.credit,c.grade FROM " . DB::t("course") . " AS c WHERE c.grade <= (SELECT s.grade FROM "
-        . DB::t("student") . " AS s WHERE s.number = :n) AND (ISNULL(cancel_date) OR cancel_date > :d) AND c.number NOT IN(SELECT course_id FROM " . DB::t("enroll") . " WHERE stu_id = :n)", [':n' => $id, ":d" => date("Y")])->fetchAll();
+    $courses = DB::q("SELECT number, name, grade,class FROM " . DB::t("student") . " WHERE grade >= (SELECT grade FROM course WHERE number=:n) AND number NOT IN(SELECT stu_id FROM enroll WHERE course_id=:n)", [':n' => $id])->fetchAll();
     $count = count($courses);
     $totalPage = ceil($count / 10) - 1;
     $course = [];
@@ -31,9 +30,7 @@ if (!$query) {
     }
 } else {
     $str = split($query);
-    $course = DB::q("SELECT c.number, c.name,c.teacher, c.credit,c.grade FROM " . DB::t("course") . " AS c WHERE c.grade <= (SELECT s.grade FROM "
-        . DB::t("student") . " AS s WHERE s.number = :n) AND (ISNULL(cancel_date) OR cancel_date > :d) AND c.number NOT IN(SELECT course_id FROM " . DB::t("enroll") . " WHERE stu_id = :n) AND c.name LIKE(\"$str\")", [':n' => $id, ":d" => date("Y")])->fetchAll();
-
+    $course = DB::q("SELECT number, name, grade,class FROM " . DB::t("student") . " WHERE grade >= (SELECT grade FROM course WHERE number=:n) AND number NOT IN(SELECT stu_id FROM enroll WHERE course_id=:n) AND name LIKE(\"$str\")", [':n' => $id])->fetchAll();
 }
 ?>
 
@@ -52,7 +49,7 @@ if (!$query) {
     <a href="#dashboard-menu" class="nav-header" data-toggle="collapse"><i class="icon-user"></i>学生</a>
     <ul id="dashboard-menu" class="nav nav-list collapse in">
         <li><a href="index.php">主页</a></li>
-        <li class="active"><a href="users.php?page=1">学生列表</a></li>
+        <li><a href="users.php?page=1">学生列表</a></li>
         <li><a href="addUser.php">信息录入</a></li>
         <!--        <li><a href="quick.php">成绩快速录入</a></li>-->
 
@@ -61,7 +58,7 @@ if (!$query) {
 
     <a href="#dashboard-menu1" class="nav-header" data-toggle="collapse"><i class="icon-table"></i>课程</a>
     <ul id="dashboard-menu1" class="nav nav-list collapse in">
-        <li><a href="courses.php?page=1">课程列表</a></li>
+        <li class="active"><a href="courses.php?page=1">课程列表</a></li>
         <li><a href="newCourse.php">信息录入</a></li>
     </ul>
 
@@ -82,15 +79,17 @@ if (!$query) {
 
     <ul class="breadcrumb">
         <li><a href="index.php">主页</a> <span class="divider">/</span></li>
-        <li class="active">学生</li>
+        <li><a href="courseInfo.php?id=<?php echo $id ?>">课程</a><span class="divider">/</span></li>
+        <li class="active">录入</li>
     </ul>
 
     <div class="container-fluid">
         <div class="row-fluid">
 
             <div class="btn-toolbar">
-                <form class="form-inline pull-right" role="search" action="/addCourse.php?id=<?php echo $id ?>&page=1"
-                      method="post" >
+
+                <form class="form-inline pull-right" role="search" action="/addStudent.php?id=<?php echo $id ?>&page=1"
+                      method="post">
                     <div class="form-group">
                         <input id="query" name="query" class="form-control mr-sm-2" type="text" placeholder="搜索...">
                         <button class="btn"><i class="icon-search"></i> 搜索</button>
@@ -103,10 +102,10 @@ if (!$query) {
                 <table class="table">
                     <thead>
                     <tr>
-                        <th>课程编号</th>
-                        <th>课程名称</th>
-                        <th>授课教师</th>
-                        <th>学分</th>
+                        <th>学号</th>
+                        <th>姓名</th>
+                        <th>年级</th>
+                        <th>班级</th>
                         <!--                        <th>分数</th>-->
                         <th style="width: 26px;"></th>
                     </tr>
@@ -120,11 +119,12 @@ if (!$query) {
                                     <?php echo $k["number"] ?>
                                 </td>
                                 <td><?php echo $k["name"]; ?></td>
-                                <td><?php echo $k["teacher"] ?></td>
-                                <td><?php echo $k["credit"] ?></td>
+                                <td><?php $arr = ["", "一", "二", "三", "四"];
+                                    echo "大" . $arr[$k["grade"]]; ?></td>
+                                <td><?php echo $k["class"] ?></td>
                                 <td>
-                                    <a href="#"
-                                       onclick="confirmCourse(<?php echo $k["number"] ?>,<?php echo $_GET['id']; ?>)"><i
+                                    <a href=""
+                                       onclick="confirmCourse(<?php echo $_GET['id']; ?>,<?php echo $k["number"] ?>)"><i
                                                 class="icon-ok"></i> </a>
                                 </td>
 
@@ -138,27 +138,27 @@ if (!$query) {
                         <br>
                         <ul>
                             <li>
-                                <a <?php if ($page == 0) echo "javascript:void(0);" ?>href="/addCourse.php?id=<?php echo $id ?>&page=<?php
+                                <a <?php if ($page == 0) echo "javascript:void(0);" ?>href="/addStudent.php?id=<?php echo $id ?>&page=<?php
                                 echo $page ?>">上一页</a>
                             </li>
                             <li <?php if ($_GET['page'] == 1) echo "class=\"active\"" ?>><a
-                                        href="/addCourse.php?id=<?php echo $id ?>&page=1">1</a>
+                                        href="/addStudent.php?id=<?php echo $id ?>&page=1">1</a>
                             </li>
                             <li <?php if ($_GET['page'] == 2) echo "class=\"active\"" ?>><a
                                     <?php if ($page == $totalPage) echo "href = \"javascript:void(0);\"" ?>
-                                        href="/addCourse.php?id=<?php echo $id ?>&page=2">2</a>
+                                        href="/addStudent.php?id=<?php echo $id ?>&page=2">2</a>
                             </li>
                             <li <?php if ($_GET['page'] == 3) echo "class=\"active\""; ?>><a
                                     <?php if ($page == $totalPage) echo "href = \"javascript:void(0);\"" ?>
-                                        href="/addCourse.php?id=<?php echo $id ?>&page=3">3</a>
+                                        href="/addStudent.php?id=<?php echo $id ?>&page=3">3</a>
                             </li>
                             <li><a href="">...</a></li>
                             <li>
-                                <a <?php if ($page == $totalPage) echo "javascript:void(0);"; ?>href="/addCourse.php?id=<?php echo $id ?>&page=<?php $page += 1;
+                                <a <?php if ($page == $totalPage) echo "javascript:void(0);"; ?>href="/addStudent.php?id=<?php echo $id ?>&page=<?php $page += 1;
                                 echo intval($_GET['page']) + 1 ?>">下一页</a>
                             </li>
                             <li>
-                                <a href="/addCourse.php?id=<?php echo $id ?>&page=<?php
+                                <a href="/addStudent.php?id=<?php echo $id ?>&page=<?php
                                 echo $totalPage + 1 ?>">尾页</a>
                             </li>
                         </ul>
