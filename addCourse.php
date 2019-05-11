@@ -1,18 +1,39 @@
 <?php
 require "DB.php";
-$id = intval($_GET['id']);
-$page = intval($_GET['page']) - 1;
-$limit = 10;
-$total = $page * $limit;
-$courses = DB::q("SELECT c.number, c.name,c.teacher, c.credit,c.grade FROM " . DB::t("course") . " AS c WHERE c.grade <= (SELECT s.grade FROM "
-    . DB::t("student") . " AS s WHERE s.number = :n) AND (ISNULL(cancel_date) OR cancel_date > :d) AND c.number NOT IN(SELECT course_id FROM " . DB::t("enroll") . " WHERE stu_id = :n)", [':n' => $id, ":d" => date("Y")])->fetchAll();
-$count = count($courses);
-$totalPage = ceil($count / 10) - 1;
-$course = [];
-for ($i = $page * 10; $i < $limit + $page * 10; $i++) {
-    if ($i < $count) {
-        $course[] = $courses[$i];
+function split($query)
+{
+    $array = array();
+    for ($i = 0; $i < mb_strlen($query, 'utf-8'); $i++) {
+        $array[] = mb_substr($query, $i, 1, 'utf-8');
     }
+    $str = "%";
+    for ($i = 0; $i < count($array); $i++) {
+        $str .= $array[$i] . '%';
+    }
+    return $str;
+}
+
+$id = intval($_GET['id']);
+@$query = $_GET['query'];
+if (!$query) {
+    $page = intval($_GET['page']) - 1;
+    $limit = 10;
+    $total = $page * $limit;
+    $courses = DB::q("SELECT c.number, c.name,c.teacher, c.credit,c.grade FROM " . DB::t("course") . " AS c WHERE c.grade <= (SELECT s.grade FROM "
+        . DB::t("student") . " AS s WHERE s.number = :n) AND (ISNULL(cancel_date) OR cancel_date > :d) AND c.number NOT IN(SELECT course_id FROM " . DB::t("enroll") . " WHERE stu_id = :n)", [':n' => $id, ":d" => date("Y")])->fetchAll();
+    $count = count($courses);
+    $totalPage = ceil($count / 10) - 1;
+    $course = [];
+    for ($i = $page * 10; $i < $limit + $page * 10; $i++) {
+        if ($i < $count) {
+            $course[] = $courses[$i];
+        }
+    }
+} else {
+    $str = split($query);
+    $course = DB::q("SELECT c.number, c.name,c.teacher, c.credit,c.grade FROM " . DB::t("course") . " AS c WHERE c.grade <= (SELECT s.grade FROM "
+        . DB::t("student") . " AS s WHERE s.number = :n) AND (ISNULL(cancel_date) OR cancel_date > :d) AND c.number NOT IN(SELECT course_id FROM " . DB::t("enroll") . " WHERE stu_id = :n) AND c.name LIKE(\"$str\")", [':n' => $id, ":d" => date("Y")])->fetchAll();
+
 }
 ?>
 
@@ -33,15 +54,20 @@ for ($i = $page * 10; $i < $limit + $page * 10; $i++) {
         <li><a href="index.php">主页</a></li>
         <li class="active"><a href="users.php?page=1">学生列表</a></li>
         <li><a href="addUser.php">信息录入</a></li>
-<!--        <li><a href="quick.php">成绩快速录入</a></li>-->
+        <!--        <li><a href="quick.php">成绩快速录入</a></li>-->
 
     </ul>
 
 
-    <a href="#dashboard-menu" class="nav-header" data-toggle="collapse"><i class="icon-table"></i>课程</a>
-    <ul id="dashboard-menu" class="nav nav-list collapse in">
+    <a href="#dashboard-menu1" class="nav-header" data-toggle="collapse"><i class="icon-table"></i>课程</a>
+    <ul id="dashboard-menu1" class="nav nav-list collapse in">
         <li><a href="courses.php?page=1">课程列表</a></li>
         <li><a href="newCourse.php">信息录入</a></li>
+    </ul>
+
+    <a href="#dashboard-menu3" class="nav-header" data-toggle="collapse"><i class="icon-group"></i>班级</a>
+    <ul id="dashboard-menu3" class="nav nav-list collapse in">
+        <li><a href="classes.php">班级信息</a></li>
     </ul>
 
 </div>
@@ -62,22 +88,22 @@ for ($i = $page * 10; $i < $limit + $page * 10; $i++) {
     <div class="container-fluid">
         <div class="row-fluid">
 
-            <div class="btn-toolbar">
-
-                <form class="form-inline pull-right" role="search" action="/search.php" method="get"
-                      target="_blank">
-                    <div class="form-group">
-                        <input name="query" class="form-control mr-sm-2" type="text" placeholder="搜索...">
-                        <button class="btn" type="submit"><i class="icon-search"></i> 搜索</button>
-                    </div>
-
-                </form>
-
-                <a href="stuExcel.php">
-                    <button class="btn"><i class="icon-download-alt"></i> 导出</button>
-                </a>
-
-            </div>
+<!--            <div class="btn-toolbar">-->
+<!---->
+<!--                <form class="form-inline pull-right" role="search" action="/addCourse.php&id=--><?php //echo $id ?><!--"-->
+<!--                      method="get">-->
+<!--                    <div class="form-group">-->
+<!--                        <input id="query" name="query" class="form-control mr-sm-2" type="text" placeholder="搜索...">-->
+<!--                        <button class="btn"><i class="icon-search"></i> 搜索</button>-->
+<!--                    </div>-->
+<!---->
+<!--                </form>-->
+<!---->
+<!--                <a href="stuExcel.php">-->
+<!--                    <button class="btn"><i class="icon-download-alt"></i> 导出</button>-->
+<!--                </a>-->
+<!---->
+<!--            </div>-->
             <div class="well">
                 <table class="table">
                     <thead>
@@ -101,9 +127,9 @@ for ($i = $page * 10; $i < $limit + $page * 10; $i++) {
                                 <td><?php echo $k["name"]; ?></td>
                                 <td><?php echo $k["teacher"] ?></td>
                                 <td><?php echo $k["credit"] ?></td>
-                                <!--                            <td style="width: 100px;"></td>-->
                                 <td>
-                                    <a onclick="confirmCourse(<?php echo $k["number"] ?>,<?php echo $_GET['id']; ?>)"><i
+                                    <a href="#"
+                                       onclick="confirmCourse(<?php echo $k["number"] ?>,<?php echo $_GET['id']; ?>)"><i
                                                 class="icon-ok"></i> </a>
                                 </td>
 
@@ -184,9 +210,9 @@ for ($i = $page * 10; $i < $limit + $page * 10; $i++) {
             type: 'get',
             dataType: 'json',
             success: function (data) {
-                if (data) {
-                    alert("选课成功");
+                if (!data) {
                     location.reload();
+                    alert("选课成功");
                 }
 
             },

@@ -55,21 +55,56 @@
   <!--[if (gt IE 9)|!(IE)]><!--> 
   <body class="http-error"> 
   <!--<![endif]-->
-    
 
 
-    
 
-    
-        <div class="row-fluid">
-    <div class="http-error">
-        <h1>Oops!</h1>
-        <p class="info">We are experiencing a bit of a delay.
-        <br>Try again shortly.</p>
-        <p><i class="icon-home"></i></p>
-        <p><a href="index.html">Back to the home page</a></p>
-    </div>
-</div>
+
+  <div id="container" class="container">
+
+      <div id="content">
+          <div class="row">
+
+              <div class="col-sm-12 col-md-12">
+                  <div class="box" id="login">
+
+                      <div class="login-header">
+                          <img src="/cas/local/imgs/login_header.png" alt=""></div>
+
+                      <form method="post" id="fm1">
+
+                          <h2>请输入您的用户名和密码.</h2>
+
+                          <section class="row">
+                              <label for="username">用户名:</label>
+
+                              <div>
+                                  <input class="required"
+                                         id="username"
+                                         size="25"
+                                         tabindex="1"
+                                         type="text"
+                                         accesskey="n"
+                                         autocomplete="off" name="username" value=""/></div>
+                          </section>
+
+                          <section class="row">
+                              <label for="password">密　码:</label>
+
+                              <div>
+                                  <input class="required"
+                                         type="password"
+                                         id="password"
+                                         size="25"
+                                         tabindex="2"
+                                         accesskey="p"
+                                         autocomplete="off" name="password" value=""/><span id="capslock-on" style="display:none;">
+                    <p>
+                        <i class="fa fa-exclamation-circle"></i>
+                        <span>CAPSLOCK key is turned on!</span>
+                    </p>
+                </span>
+                              </div>
+                          </section>
 
 
     

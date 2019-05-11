@@ -21,7 +21,11 @@ if ($type == "stu") {
         $wscore += $w["grades"] * $w['grade'];
         $we += $w['grade'];
     }
-    $wscore /= $we;
+    if ($we) {
+        $wscore /= $we;
+    } else {
+        $wscore = 0;
+    }
 
     $avg = DB::q("SELECT AVG(grades) AS avg FROM " . DB::t("enroll") . " WHERE stu_id=:s AND grades>-1", [':s' => $id])->fetch()['avg'];
     $max = DB::q("SELECT MAX(grades) AS max FROM " . DB::t("enroll") . " WHERE stu_id=:s AND grades>-1", [':s' => $id])->fetch()['max'];
@@ -67,15 +71,20 @@ if ($type == "stu") {
         <li><a href="index.php">主页</a></li>
         <li><a href="users.php?page=1">学生列表</a></li>
         <li><a href="addUser.php">信息录入</a></li>
-<!--        <li><a href="quick.php">成绩快速录入</a></li>-->
+        <!--        <li><a href="quick.php">成绩快速录入</a></li>-->
 
     </ul>
 
 
-    <a href="#dashboard-menu" class="nav-header" data-toggle="collapse"><i class="icon-table"></i>课程</a>
-    <ul id="dashboard-menu" class="nav nav-list collapse in">
+    <a href="#dashboard-menu1" class="nav-header" data-toggle="collapse"><i class="icon-table"></i>课程</a>
+    <ul id="dashboard-menu1" class="nav nav-list collapse in">
         <li><a href="courses.php?page=1">课程列表</a></li>
         <li><a href="newCourse.php">信息录入</a></li>
+    </ul>
+
+    <a href="#dashboard-menu3" class="nav-header" data-toggle="collapse"><i class="icon-group"></i>班级</a>
+    <ul id="dashboard-menu3" class="nav nav-list collapse in">
+        <li><a href="classes.php">班级信息</a></li>
     </ul>
 
 
@@ -229,7 +238,7 @@ if ($type == "stu") {
                                 </tr>
                                 <tr>
                                     <td>平均成绩</td>
-                                    <td><?php echo round($avg, 6) ?></td>
+                                    <td><?php echo round($avg, 3) ?></td>
                                 </tr>
                                 <tr>
                                     <td>最高分数</td>

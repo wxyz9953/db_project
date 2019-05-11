@@ -29,6 +29,11 @@ require "DB.php";
         <li><a href="newCourse.php">信息录入</a></li>
     </ul>
 
+    <a href="#dashboard-menu3" class="nav-header" data-toggle="collapse"><i class="icon-group"></i>班级</a>
+    <ul id="dashboard-menu3" class="nav nav-list collapse in">
+        <li><a href="classes.php">班级信息</a></li>
+    </ul>
+
 </div>
 
 <div class="content">

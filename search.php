@@ -57,10 +57,15 @@ if (is_numeric($data)) {
     </ul>
 
 
-    <a href="#dashboard-menu" class="nav-header" data-toggle="collapse"><i class="icon-table"></i>课程</a>
-    <ul id="dashboard-menu" class="nav nav-list collapse in">
+    <a href="#dashboard-menu1" class="nav-header" data-toggle="collapse"><i class="icon-table"></i>课程</a>
+    <ul id="dashboard-menu1" class="nav nav-list collapse in">
         <li><a href="courses.php?page=1">课程列表</a></li>
         <li><a href="newCourse.php">信息录入</a></li>
+    </ul>
+
+    <a href="#dashboard-menu3" class="nav-header" data-toggle="collapse"><i class="icon-group"></i>班级</a>
+    <ul id="dashboard-menu3" class="nav nav-list collapse in">
+        <li><a href="classes.php">班级信息</a></li>
     </ul>
 </div>
 

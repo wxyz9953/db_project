@@ -64,15 +64,20 @@ function split($query)
         <li><a href="index.php">主页</a></li>
         <li><a href="users.php?page=1">学生列表</a></li>
         <li><a href="addUser.php">信息录入</a></li>
-<!--        <li><a href="quick.php">成绩快速录入</a></li>-->
+        <!--        <li><a href="quick.php">成绩快速录入</a></li>-->
 
     </ul>
 
 
-    <a href="#dashboard-menu" class="nav-header" data-toggle="collapse"><i class="icon-table"></i>课程</a>
-    <ul id="dashboard-menu" class="nav nav-list collapse in">
+    <a href="#dashboard-menu1" class="nav-header" data-toggle="collapse"><i class="icon-table"></i>课程</a>
+    <ul id="dashboard-menu1" class="nav nav-list collapse in">
         <li class="active"><a href="courses.php?page=1">课程列表</a></li>
         <li><a href="newCourse.php">信息录入</a></li>
+    </ul>
+
+    <a href="#dashboard-menu3" class="nav-header" data-toggle="collapse"><i class="icon-group"></i>班级</a>
+    <ul id="dashboard-menu3" class="nav nav-list collapse in">
+        <li><a href="classes.php">班级信息</a></li>
     </ul>
 
 </div>
@@ -95,8 +100,7 @@ function split($query)
             <?php if (!$query) { ?>
                 <div class="btn-toolbar">
 
-                    <form class="form-inline pull-right" role="search" action="/courses.php" method="get"
-                          target="_blank">
+                    <form class="form-inline pull-right" role="search" action="/courses.php" method="get">
                         <div class="form-group">
                             <input name="query" class="form-control mr-sm-2" type="text" placeholder="搜索...">
                             <button class="btn" type="submit"><i class="icon-search"></i> 搜索</button>

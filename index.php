@@ -77,7 +77,7 @@ require "DB.php";
         <li class="active"><a href="index.php">主页</a></li>
         <li><a href="users.php?page=1">学生列表</a></li>
         <li><a href="addUser.php">信息录入</a></li>
-<!--        <li><a href="quick.php">成绩快速录入</a></li>-->
+        <!--        <li><a href="quick.php">成绩快速录入</a></li>-->
 
     </ul>
 
@@ -89,31 +89,35 @@ require "DB.php";
     <!--        <li><a href="reset-password.html">Reset Password</a></li>-->
     <!--    </ul>-->
 
-    <a href="#dashboard-menu" class="nav-header" data-toggle="collapse"><i class="icon-table"></i>课程</a>
-    <ul id="dashboard-menu" class="nav nav-list collapse in">
+    <a href="#dashboard-menu1" class="nav-header" data-toggle="collapse"><i class="icon-table"></i>课程</a>
+    <ul id="dashboard-menu1" class="nav nav-list collapse in">
         <li><a href="courses.php?page=1">课程列表</a></li>
         <li><a href="newCourse.php">信息录入</a></li>
     </ul>
 
-<!--    <a href="#legal-menu" class="nav-header" data-toggle="collapse"><i class="icon-legal"></i>Legal</a>-->
-<!--    <ul id="legal-menu" class="nav nav-list collapse">-->
-<!--        <li><a href="privacy-policy.html">Privacy Policy</a></li>-->
-<!--        <li><a href="terms-and-conditions.html">Terms and Conditions</a></li>-->
-<!--    </ul>-->
-<!---->
-<!--    <a href="help.html" class="nav-header"><i class="icon-question-sign"></i>Help</a>-->
-<!--    <a href="faq.html" class="nav-header"><i class="icon-comment"></i>Faq</a>-->
+    <a href="#dashboard-menu3" class="nav-header" data-toggle="collapse"><i class="icon-group"></i>班级</a>
+    <ul id="dashboard-menu3" class="nav nav-list collapse in">
+        <li><a href="classes.php">班级信息</a></li>
+    </ul>
+    <!--    <a href="#legal-menu" class="nav-header" data-toggle="collapse"><i class="icon-legal"></i>Legal</a>-->
+    <!--    <ul id="legal-menu" class="nav nav-list collapse">-->
+    <!--        <li><a href="privacy-policy.html">Privacy Policy</a></li>-->
+    <!--        <li><a href="terms-and-conditions.html">Terms and Conditions</a></li>-->
+    <!--    </ul>-->
+    <!---->
+    <!--    <a href="help.html" class="nav-header"><i class="icon-question-sign"></i>Help</a>-->
+    <!--    <a href="faq.html" class="nav-header"><i class="icon-comment"></i>Faq</a>-->
 </div>
 
 
 <div class="content">
 
     <div class="header">
-        <div class="stats">
-            <p class="stat"><span class="number">53</span>tickets</p>
-            <p class="stat"><span class="number">27</span>tasks</p>
-            <p class="stat"><span class="number">15</span>waiting</p>
-        </div>
+<!--        <div class="stats">-->
+<!--            <p class="stat"><span class="number">53</span>tickets</p>-->
+<!--            <p class="stat"><span class="number">27</span>tasks</p>-->
+<!--            <p class="stat"><span class="number">15</span>waiting</p>-->
+<!--        </div>-->
 
         <h1 class="page-title">学生管理系统</h1>
     </div>
