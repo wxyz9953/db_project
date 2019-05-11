@@ -137,7 +137,7 @@ $students = DB::q("SELECT e.id,s.number,s.name,s.grade,s.class,e.grades FROM " .
                     <th>班级</th>
                     <th>分数</th>
 
-                    <!--                    <th style="width: 26px;"></th>-->
+                    <th style="width: 26px;"></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -161,6 +161,13 @@ $students = DB::q("SELECT e.id,s.number,s.name,s.grade,s.class,e.grades FROM " .
                                 echo $k["grades"];
                             }
                             ?>
+                        </td>
+                        <td>
+                            <a href="#edit" role="button" data-toggle="modal"
+                               onclick="test(<?php echo $k['number'] ?>)">
+                                <i class="icon-pencil"></i></a>
+                            <a href="#myModal" role="button" data-toggle="modal"
+                               onclick="test(<?php echo $k['id'] ?>)"><i class="icon-remove"></i></a>
                         </td>
 
                     </tr>
@@ -247,7 +254,7 @@ $students = DB::q("SELECT e.id,s.number,s.name,s.grade,s.class,e.grades FROM " .
     function addScore(code) {
         var value = document.getElementById("score").value;
         $.ajax({
-            url: "/addScore.php?id=" + code + "&score=" + value + "&sid=" +<?php echo $_GET['id'];?>,
+            url: "/addScore.php?sid=" + code + "&score=" + value + "&id=" +<?php echo $_GET['id'];?>,
             type: 'get',
             dataType: 'json',
             success: function (data) {
