@@ -58,7 +58,7 @@ require "DB.php";
                         <br>
                         <form id="form1" onsubmit="return false" action="#" method="post">
                             <div class="control-group">
-                                <label class="control-label" for="textarea">学号</label>
+                                <label class="control-label" for="textarea">课程号</label>
                                 <div class="controls">
                                     <input style="width:280px; margin:0px 0px 0px 0px;height:25px;border-radius:5px;border:1px solid #DBDBDB;"
                                            placeholder=" 课程编号必须是7位,示例:1000000" name="number" id="number"
