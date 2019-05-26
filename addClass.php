@@ -7,7 +7,7 @@ $credit = intval($_POST['credit']);
 $grade = intval($_POST['grade']);
 @$cancel_date = intval($_POST['cancel_date']);
 $res = DB::q("SELECT id FROM " . DB::t("course") . " WHERE number=:n", [':n' => $number])->fetch();
-if (strlen($number) != 7 || $res) {
+if (strlen($number) != 7 || $res || $credit <= 0 || $grade <= 0 || $grade > 4) {
     echo json_encode("参数错误");
     exit;
 }

@@ -20,6 +20,10 @@ if ($enter_age < 10 || $enter_age > 50) {
 $enter_time = intval($_POST['enter_time']);
 $grade = intval($_POST['grade']);
 $class = intval($_POST['class']);
+if ($grade <= 0 || $grade > 4 || $enter_time > 2020 || $class == 0) {
+    echo json_encode("参数错误");
+    exit;
+}
 $id = DB::insert(DB::t("student"), [
     'number' => $number,
     'name' => $name,

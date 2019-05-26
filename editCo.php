@@ -10,6 +10,10 @@ $name = htmlspecialchars($_POST['name']);
 $teacher = htmlspecialchars($_POST['teacher']);
 $credit = intval($_POST['credit']);
 $grade = intval($_POST['grade']);
+if ($credit <= 0 || $grade <= 0 || $grade > 4) {
+    echo json_encode("参数错误");
+    exit;
+}
 $cancel_date = $_POST['cancel_date'];
 $id = DB::q("SELECT id FROM " . DB::t("course") . " WHERE number=:n", [':n' => $number])->fetch()['id'];
 $res = DB::update(DB::t("course"), [
